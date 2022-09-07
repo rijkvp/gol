@@ -1,0 +1,19 @@
+[package]
+name = "gol"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+winit = "0.27"
+pixels = "0.9"
+winit_input_helper = "0.13"
+rand = "0.8"
+crossbeam-channel = "0.5"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "random"
+harness = false
