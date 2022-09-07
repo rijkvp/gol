@@ -4,11 +4,10 @@ use gol::{life::Life, pattern::Pattern};
 fn r_pentomino() {
     // Test a R-pentomino methuselah: https://conwaylife.com/wiki/R-pentomino
     let mut game = Life::from_pattern(
-        64,
+        (64, 64),
         &Pattern {
             pattern: vec![false, true, true, true, true, false, false, true, false],
-            width: 3,
-            height: 3,
+            size: (3, 3),
         },
     );
     for _ in 0..500 {

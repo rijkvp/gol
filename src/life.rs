@@ -2,7 +2,7 @@ use crate::{grid::Grid, pattern::Pattern};
 
 #[derive(Clone)]
 pub struct Life {
-    size: usize,
+    size: (usize, usize),
     pub tick: u128,
     grid1: Grid,
     grid2: Grid,
@@ -10,7 +10,7 @@ pub struct Life {
 }
 
 impl Life {
-    pub fn empty(size: usize) -> Life {
+    pub fn empty(size: (usize, usize)) -> Life {
         Life {
             grid1: Grid::empty(size),
             grid2: Grid::empty(size),
@@ -20,11 +20,11 @@ impl Life {
         }
     }
 
-    pub fn from_pattern(size: usize, pattern: &Pattern) -> Life {
+    pub fn from_pattern(size: (usize, usize), pattern: &Pattern) -> Life {
         Life {
             tick: 0,
             size,
-            grid1: Grid::from_pattern(size, pattern),
+            grid1: Grid::from_pattern_centered(size, pattern),
             grid2: Grid::empty(size),
             mode: false,
         }
@@ -41,11 +41,11 @@ impl Life {
         };
 
         // Iterate over the cells
-        let max = self.size * self.size;
+        let max = self.size.0 * self.size.1;
         for i in 0..max {
             // Count the number of neighbour living cells
             let mut nb_count = 0u8;
-            let row_len = self.size as i64;
+            let row_len = self.size.0 as i64;
             // Iterate over the fixed offets of the 8 neighbours in the array
             for offset in [
                 -row_len - 1,

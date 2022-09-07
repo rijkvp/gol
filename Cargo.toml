@@ -16,5 +16,5 @@ thiserror = "1.0"
 criterion = "0.3"
 
 [[bench]]
-name = "random"
+name = "patterns"
 harness = false

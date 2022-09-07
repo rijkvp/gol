@@ -1,5 +1,5 @@
 use crossbeam_channel::bounded;
-use gol::{life::Life, pattern::{self, Pattern}};
+use gol::{life::Life, pattern::Pattern};
 use pixels::{Pixels, SurfaceTexture};
 use std::{
     thread,
@@ -14,7 +14,7 @@ use winit::{
 use winit_input_helper::WinitInputHelper;
 
 pub fn main() {
-    run(512);
+    run(200, 100);
 }
 
 enum GameSpeed {
@@ -33,10 +33,10 @@ enum InputEvent {
     SetSpeed(GameSpeed),
 }
 
-fn run(grid_size: u32) {
+fn run(width: u32, height: u32) {
     let event_loop = EventLoop::new();
     let mut input = WinitInputHelper::new();
-    let size = LogicalSize::new(grid_size as f64, grid_size as f64);
+    let size = LogicalSize::new(width as f64, height as f64);
     let window = WindowBuilder::new()
         .with_title("test")
         .with_inner_size(size)
@@ -47,7 +47,7 @@ fn run(grid_size: u32) {
     let mut pixels = {
         let window_size = window.inner_size();
         let surface_texture = SurfaceTexture::new(window_size.width, window_size.height, &window);
-        Pixels::new(grid_size, grid_size, surface_texture).unwrap()
+        Pixels::new(width, height, surface_texture).unwrap()
     };
 
     let (event_tx, event_rx) = bounded(1);
@@ -57,7 +57,7 @@ fn run(grid_size: u32) {
     thread::spawn(move || {
         let mut update_time = SystemTime::now();
         let pattern = Pattern::from_plaintext_file("pattern.cells").unwrap();
-        let mut game = Life::from_pattern(grid_size as usize, &pattern);
+        let mut game = Life::from_pattern((width as usize, height as usize), &pattern);
         let mut paused = false;
         let mut speed = GameSpeed::default();
         loop {

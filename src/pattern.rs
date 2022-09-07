@@ -4,8 +4,7 @@ use std::fs;
 
 pub struct Pattern {
     pub pattern: Vec<bool>,
-    pub width: usize,
-    pub height: usize,
+    pub size: (usize, usize),
 }
 
 impl Pattern {
@@ -31,30 +30,29 @@ impl Pattern {
         }
         Ok(Pattern {
             pattern,
-            width,
-            height,
+            size: (width, height),
         })
     }
 
-    pub fn from_random(width: usize, height: usize) -> Pattern {
+    pub fn from_random(size: (usize, usize)) -> Pattern {
         let mut rng = rand::thread_rng();
-        let mut pattern = Vec::with_capacity(width * height);
-        for _ in 0..width * height {
+        let len = size.0 * size.1;
+        let mut pattern = Vec::with_capacity(len);
+        for _ in 0..len {
             pattern.push(rng.gen_bool(0.3));
         }
         Pattern {
             pattern,
-            width,
-            height,
+            size,
         }
     }
 
     pub fn print(&self) {
-        println!("Pattern {}x{}", self.width, self.height);
-        for y in 0..self.height {
+        println!("Pattern {}x{}", self.size.0, self.size.1);
+        for y in 0..self.size.1 {
             let mut line = String::new();
-            for x in 0..self.width {
-                if self.pattern[y * self.width + x] {
+            for x in 0..self.size.0 {
+                if self.pattern[y * self.size.0 + x] {
                     line.push('O')
                 } else {
                     line.push('.')
