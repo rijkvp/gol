@@ -1,3 +1,4 @@
+use crate::pattern::Pattern;
 use std::ops::{Index, IndexMut};
 
 #[derive(Default, Clone)]
@@ -15,15 +16,13 @@ impl Grid {
     }
 
     // Creates a grid with a pattern centered in the middle
-    pub fn from_pattern(size: usize, pattern: &[bool]) -> Grid {
-        let psize = (pattern.len() as f64).sqrt() as usize;
-        assert_eq!(pattern.len() / psize, psize);
+    pub fn from_pattern(size: usize, pattern: &Pattern) -> Grid {
         let mut grid: Grid = Self::empty(size);
-        let start_x = size / 2 - psize / 2;
-        let start_y = size / 2 - psize / 2;
-        for x in 0..psize {
-            for y in 0..psize {
-                let val = pattern[y * psize + x];
+        let start_y = size / 2 - pattern.height / 2;
+        let start_x = size / 2 - pattern.width / 2;
+        for y in 0..pattern.height {
+            for x in 0..pattern.width {
+                let val = pattern.pattern[y * pattern.height + x];
                 grid[(start_y + y) * size + start_x + x] = val;
             }
         }

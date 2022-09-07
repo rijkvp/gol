@@ -1,4 +1,4 @@
-use crate::grid::Grid;
+use crate::{grid::Grid, pattern::Pattern};
 
 #[derive(Clone)]
 pub struct Life {
@@ -20,7 +20,7 @@ impl Life {
         }
     }
 
-    pub fn from_pattern(size: usize, pattern: &[bool]) -> Life {
+    pub fn from_pattern(size: usize, pattern: &Pattern) -> Life {
         Life {
             tick: 0,
             size,

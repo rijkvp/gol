@@ -635,6 +635,7 @@ dependencies = [
  "crossbeam-channel",
  "pixels",
  "rand",
+ "thiserror",
  "winit",
  "winit_input_helper",
 ]

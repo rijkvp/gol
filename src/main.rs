@@ -1,5 +1,5 @@
 use crossbeam_channel::bounded;
-use gol::life::Life;
+use gol::{life::Life, pattern::{self, Pattern}};
 use pixels::{Pixels, SurfaceTexture};
 use std::{
     thread,
@@ -14,12 +14,18 @@ use winit::{
 use winit_input_helper::WinitInputHelper;
 
 pub fn main() {
-    run(128);
+    run(512);
 }
 
 enum GameSpeed {
     Delay(Duration),
     Max,
+}
+
+impl Default for GameSpeed {
+    fn default() -> Self {
+        Self::Delay(Duration::from_millis(100))
+    }
 }
 
 enum InputEvent {
@@ -50,18 +56,16 @@ fn run(grid_size: u32) {
     // Game thread
     thread::spawn(move || {
         let mut update_time = SystemTime::now();
-        let mut game = Life::from_pattern(
-            grid_size as usize,
-            &[false, true, true, true, true, false, false, true, false],
-        );
+        let pattern = Pattern::from_plaintext_file("pattern.cells").unwrap();
+        let mut game = Life::from_pattern(grid_size as usize, &pattern);
         let mut paused = false;
-        let mut speed = GameSpeed::Delay(Duration::from_millis(20));
+        let mut speed = GameSpeed::default();
         loop {
             let delta = update_time.elapsed().unwrap();
-            let fps = 1.0 / delta.as_secs_f64();
+            let tps = (1.0 / delta.as_secs_f64()).floor();
             update_time = SystemTime::now();
             if game.tick % 500 == 0 {
-                println!("{}. delta {:?} - fps {}", game.tick, delta, fps.floor());
+                println!("T {} - TPS {}", game.tick, tps);
             }
             if let Ok(event) = event_rx.try_recv() {
                 match event {
