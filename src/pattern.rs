@@ -10,6 +10,10 @@ pub struct Pattern {
 impl Pattern {
     pub fn from_plaintext_file<P: AsRef<Path>>(path: P) -> Result<Pattern, Error> {
         let input = fs::read_to_string(path)?;
+        Self::from_plaintext(input)
+    }
+
+    pub fn from_plaintext(input: String) -> Result<Pattern, Error> {
         let cleaned: Vec<&str> = input.lines().filter(|l| !l.starts_with('!')).collect();
         let width = cleaned
             .iter()
