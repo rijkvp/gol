@@ -1,6 +1,6 @@
 use crate::error::Error;
 use rand::Rng;
-use std::fs;
+use std::{fs, path::Path};
 
 pub struct Pattern {
     pub pattern: Vec<bool>,
@@ -8,7 +8,7 @@ pub struct Pattern {
 }
 
 impl Pattern {
-    pub fn from_plaintext_file(path: &str) -> Result<Pattern, Error> {
+    pub fn from_plaintext_file<P: AsRef<Path>>(path: P) -> Result<Pattern, Error> {
         let input = fs::read_to_string(path)?;
         let cleaned: Vec<&str> = input.lines().filter(|l| !l.starts_with("!")).collect();
         let width = cleaned
@@ -41,10 +41,7 @@ impl Pattern {
         for _ in 0..len {
             pattern.push(rng.gen_bool(0.3));
         }
-        Pattern {
-            pattern,
-            size,
-        }
+        Pattern { pattern, size }
     }
 
     pub fn print(&self) {

@@ -25,7 +25,6 @@ impl Grid {
         let mut grid: Grid = Self::empty(size);
         let start_x = size.0 / 2 - pattern.size.0 / 2;
         let start_y = size.1 / 2 - pattern.size.1 / 2;
-        println!("start x {start_x} start y {start_y}");
         for y in 0..pattern.size.1  {
             for x in 0..pattern.size.0 {
                 let val = pattern.pattern[y * pattern.size.0 + x];

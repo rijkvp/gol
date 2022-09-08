@@ -1,4 +1,18 @@
-use crate::{grid::Grid, pattern::Pattern};
+use std::path::PathBuf;
+
+use crate::{error::Error, grid::Grid, pattern::Pattern};
+
+#[derive(Debug, Clone)]
+pub enum PatternConfig {
+    Random,
+    File(PathBuf),
+}
+
+#[derive(Debug, Clone)]
+pub struct LifeConfig {
+    pub size: (usize, usize),
+    pub pattern: PatternConfig,
+}
 
 #[derive(Clone)]
 pub struct Life {
@@ -10,24 +24,23 @@ pub struct Life {
 }
 
 impl Life {
-    pub fn empty(size: (usize, usize)) -> Life {
-        Life {
-            grid1: Grid::empty(size),
-            grid2: Grid::empty(size),
+    pub fn new(size: (usize, usize), pattern: &Pattern) -> Self {
+        Self {
+            tick: 0,
             size,
-            tick: 0, 
+            grid1: Grid::from_pattern_centered(size, &pattern),
+            grid2: Grid::empty(size),
             mode: false,
         }
     }
 
-    pub fn from_pattern(size: (usize, usize), pattern: &Pattern) -> Life {
-        Life {
-            tick: 0,
-            size,
-            grid1: Grid::from_pattern_centered(size, pattern),
-            grid2: Grid::empty(size),
-            mode: false,
-        }
+    pub fn from_config(cfg: &LifeConfig) -> Result<Self, Error> {
+        let pattern = match &cfg.pattern {
+            PatternConfig::Random => Pattern::from_random(cfg.size),
+            PatternConfig::File(path) => Pattern::from_plaintext_file(&path)?,
+        };
+
+        Ok(Self::new(cfg.size, &pattern))
     }
 
     // The main Conway's Game of Life algorithm
