@@ -28,7 +28,7 @@ impl Life {
         Self {
             tick: 0,
             size,
-            grid1: Grid::from_pattern_centered(size, &pattern),
+            grid1: Grid::from_pattern_centered(size, pattern),
             grid2: Grid::empty(size),
             mode: false,
         }

@@ -9,11 +9,7 @@ pub struct Grid {
 
 impl Grid {
     pub fn empty(size: (usize, usize)) -> Self {
-        let mut grid = Vec::with_capacity(size.0 * size.1);
-        for _ in 0..size.0 * size.1 {
-            grid.push(false);
-        }
-        Self { grid, size }
+        Self { grid: vec![false; size.0 * size.1], size }
     }
 
     pub fn from_pattern(pattern: Pattern) -> Grid { 

@@ -11,16 +11,19 @@ use std::{
 
 mod pixels;
 
+#[derive(Debug, Clone)]
 pub enum GameMode {
     Headless,
     Pixels,
 }
 
+#[derive(Debug, Clone)]
 pub struct GameConfig {
     pub life: LifeConfig,
     pub mode: GameMode,
 }
 
+#[derive(Debug)]
 enum GameSpeed {
     Delay(Duration),
     Max,
@@ -32,6 +35,7 @@ impl Default for GameSpeed {
     }
 }
 
+#[derive(Debug)]
 enum InputEvent {
     TogglePaused,
     SetSpeed(GameSpeed),
@@ -41,10 +45,9 @@ pub fn run(cfg: GameConfig) -> Result<(), Error> {
     let (event_tx, event_rx) = bounded(1);
     let (state_tx, state_rx) = bounded(1);
 
-
     // Game thread
     let mut game = Life::from_config(&cfg.life)?;
-    thread::spawn(move || {
+    let game_handle = thread::spawn(move || {
         let mut update_time = SystemTime::now();
         let mut paused = false;
         let mut speed = GameSpeed::default();
@@ -56,6 +59,7 @@ pub fn run(cfg: GameConfig) -> Result<(), Error> {
                 info!("T {} - TPS {}", game.tick, tps);
             }
             if let Ok(event) = event_rx.try_recv() {
+                info!("receive input {:?}", event);
                 match event {
                     InputEvent::TogglePaused => paused = !paused,
                     InputEvent::SetSpeed(s) => speed = s,
@@ -72,8 +76,9 @@ pub fn run(cfg: GameConfig) -> Result<(), Error> {
         }
     });
 
+    // Render thread
     match cfg.mode {
-        GameMode::Headless => (),
+        GameMode::Headless => game_handle.join().unwrap(),
         GameMode::Pixels => pixels::run_pixels(&cfg.life, state_rx, event_tx),
     }
 
