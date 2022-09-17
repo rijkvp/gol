@@ -9,14 +9,15 @@ clap = { version = "3.2", features = [ "derive" ] }
 log = "0.4"
 env_logger = "0.9"
 winit = "0.27"
-pixels = "0.9"
-winit_input_helper = "0.13"
+wgpu = "0.13.1  "
 rand = "0.8"
 crossbeam-channel = "0.5"
 thiserror = "1.0"
+pollster = "0.2.5"
+bytemuck = "1.12.1"
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = "0.4"
 
 [[bench]]
 name = "patterns"

@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 use gol::{
-    game::{run, GameConfig, GameMode},
+    game::{self, GameConfig},
     life::{LifeConfig, PatternConfig},
 };
 
@@ -16,7 +16,7 @@ struct Args {
     #[clap(short, long, value_name = "FILE")]
     pattern: Option<PathBuf>,
     #[clap(long)]
-    headless: bool,
+    no_graphics: bool,
 }
 
 impl Args {
@@ -33,11 +33,7 @@ impl Args {
                 size: (self.width, self.height),
                 pattern: pconfig,
             },
-            mode: if self.headless {
-                GameMode::Headless
-            } else {
-                GameMode::Pixels
-            },
+            graphics: !self.no_graphics,
         }
     }
 }
@@ -47,7 +43,7 @@ pub fn main() {
 
     let args = Args::parse();
 
-    if let Err(e) = run(args.into_config()) {
+    if let Err(e) = game::start(args.into_config()) {
         eprintln!("failed to run game: {}", e);
     }
 }
